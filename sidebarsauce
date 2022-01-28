@@ -1,0 +1,47 @@
+sidebar:
+  style: |
+    :host {
+        --sidebar-background: rgba(20,20,20,1);
+        --sidebar-text-color: var(--primary-text-color);
+        --border-radius: 5px;
+        --face-color: #FFF;
+        --face-border-color: #FFF;
+        --clock-hands-color: #000;
+        --clock-seconds-hand-color: #FF4B3E;
+        --clock-middle-background: #FFF;
+        --clock-middle-border: #000;    
+        box-shadow: inset -38px -3px 11px -28px rgba(89,89,89,.2);
+    }
+  digitalClock: true
+  date: true
+  sidebarMenu:
+    - action: navigate
+      navigation_path: /lovelace/home
+      name: Perspective View
+      icon: mdi:floor-plan
+    - action: navigate
+      navigation_path: /lovelace/living-spaces
+      name: Living Spaces
+      active: true
+      icon: mdi:home
+    - action: navigate
+      navigation_path: /lovelace/resting-spaces
+      name: Resting Spaces
+      icon: mdi:bed-king
+    - action: navigate
+      navigation_path: /lovelace/ambience
+      name: Ambience
+      icon: mdi:weather-cloudy
+    - action: navigate
+      navigation_path: /lovelace/media
+      name: Media
+      icon: mdi:spotify
+    - action: navigate
+      navigation_path: /lovelace/control-center
+      name: Control Center
+      icon: mdi:tablet-dashboard
+      
+      
+      
+      
+      
