@@ -20,3 +20,5 @@ The main purpose of this repository is not to showcase the entire code, but to t
 As of 28/1/2022, I will post a video tutorial first, and then slowly update this repository as time goes.
 
 Watch this video for the full installation guide.
+
+https://www.youtube.com/watch?v=Rky5UP-2MlI
