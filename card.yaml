@@ -1,0 +1,57 @@
+type: vertical-stack
+cards:
+  - type: markdown
+    content: '## Announcements'
+    style:
+      .: |
+        ha-card {
+          background-color: transparent;
+          text-align: start;
+        }
+  - type: grid
+    cards:
+      - type: custom:button-card
+        entity: input_boolean.fake_light2
+        name: Lighting
+        tap_action:
+          action: toggle
+        styles:
+          card:
+            - border-radius: 8%
+        template:
+          - base
+          - icon_hue
+      - type: custom:button-card
+        entity: input_boolean.fake_light2
+        name: Lighting
+        tap_action:
+          action: toggle
+        styles:
+          card:
+            - border-radius: 8%
+        template:
+          - base
+          - icon_hue
+      - type: custom:button-card
+        entity: input_boolean.fake_light2
+        name: Lighting
+        tap_action:
+          action: toggle
+        styles:
+          card:
+            - border-radius: 8%
+        template:
+          - base
+          - icon_hue
+      - type: custom:button-card
+        entity: input_boolean.fake_light2
+        name: Lighting
+        tap_action:
+          action: toggle
+        styles:
+          card:
+            - border-radius: 8%
+        template:
+          - base
+          - icon_hue
+    columns: 2
