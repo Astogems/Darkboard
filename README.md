@@ -22,3 +22,14 @@ As of 28/1/2022, I will post a video tutorial first, and then slowly update this
 Watch this video for the full installation guide.
 
 https://www.youtube.com/watch?v=Rky5UP-2MlI
+
+## FAQ:
+
+Question: I have installed everything as shown in the video but my light popup is not working.
+Answer: You probably did not install browser_mod correctly. Check if your configurations.yaml contains 
+
+browser_mod:
+
+Secondly, under Developer-Tools, check if you have browser_mod services. If all of these are present and it still does not work, check your custom_components again and be sure not to miss out anything!
+
+
