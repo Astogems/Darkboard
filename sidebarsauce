@@ -274,7 +274,7 @@ sidebar:
                     color: rgba(255, 255, 255, 1);
                   }
         - type: weather-forecast
-          entity: weather.2510
+          entity: weather.home
           show_forecast: false
           card_mod:
             style: |
