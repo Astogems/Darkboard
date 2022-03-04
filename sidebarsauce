@@ -12,36 +12,287 @@ sidebar:
         --clock-middle-border: #000;    
         box-shadow: inset -38px -3px 11px -28px rgba(89,89,89,.2);
     }
+    .sidebarMenu li {
+        color: var(--sidebar-text-color, #000);
+        position: relative;
+        padding: 6px 20px !important;
+        border-radius: 12px;
+        font-size: 18px;
+        line-height: 22px !important;
+        font-weight: 300;
+        white-space: normal;
+        display: block;
+        cursor: pointer;
+    }
   digitalClock: true
   date: true
+  twelveHourVersion: true
+  period: true
   sidebarMenu:
     - action: navigate
-      navigation_path: /lovelace/home
-      name: Perspective View
-      icon: mdi:floor-plan
-    - action: navigate
-      navigation_path: /lovelace/living-spaces
-      name: Living Spaces
+      navigation_path: /lovelace-darkboard/2nd-floor
+      name: 2nd Floor
       active: true
-      icon: mdi:home
+      icon: mdi:home-floor-2
     - action: navigate
-      navigation_path: /lovelace/resting-spaces
-      name: Resting Spaces
-      icon: mdi:bed-king
+      navigation_path: /lovelace-darkboard/1st-floor
+      name: 1st Floor
+      icon: mdi:home-floor-1
     - action: navigate
-      navigation_path: /lovelace/ambience
-      name: Ambience
-      icon: mdi:weather-cloudy
+      navigation_path: /lovelace-darkboard/basement
+      name: Basement
+      icon: mdi:home-floor-b
     - action: navigate
-      navigation_path: /lovelace/media
+      navigation_path: /lovelace-darkboard/outdoor
+      name: Outdoor
+      icon: mdi:home-floor-0
+    - action: navigate
+      navigation_path: /lovelace-darkboard/media
       name: Media
-      icon: mdi:spotify
+      icon: mdi:music
     - action: navigate
-      navigation_path: /lovelace/control-center
-      name: Control Center
-      icon: mdi:tablet-dashboard
-      
-      
-      
-      
-      
+      navigation_path: /lovelace-darkboard/security
+      name: Cameras
+      icon: mdi:cctv
+  bottomCard:
+    type: vertical-stack
+    cardOptions:
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: custom:layout-card
+              layout_type: grid
+              layout:
+                grid-column-gap: 2%
+                grid-row-gap: 0%
+                grid-template-columns: repeat(1, 1fr) 0
+                grid-template-rows: 0 repeat(1, fit-content(100%)) 0fr
+                grid-template-areas: |
+                  " One "
+              cards:
+                - type: markdown
+                  content: >-
+
+                    {% if now().hour  < 5 %} ### Good Night {{'\U0001F634'}} {%
+                    elif now().hour < 12 %} ### Good Morning {{'\u2615\uFE0F'}}
+                    {% elif now().hour < 18 %} ### Good Afternoon
+                    {{'\U0001F44B\U0001F3FB'}}  {% else %} ## Good Evening
+                    {{'\U0001F44B\U0001F3FB'}}{% endif %}
+
+
+                    {% if expand(states.light) |
+                      selectattr('state','eq','on')|
+                      rejectattr('attributes.type','eq','browser_mod' ) | rejectattr('attributes.friendly_name','eq','Balcony Fan' )| rejectattr('attributes.friendly_name','eq','Living Room Fan' ) | rejectattr('attributes.friendly_name','eq','Fan' ) | rejectattr('attributes.friendly_name','eq','Heater on_off' )| rejectattr('attributes.friendly_name','eq','MBR Heater on_off' )| rejectattr('attributes.friendly_name','eq','Common Toilet Heater' ) | list | count
+                     == 1 %}
+                      There is a light source that is turned on!
+                    {% elif expand(states.light) |
+                      selectattr('state','eq','on')|
+                      rejectattr('attributes.type','eq','browser_mod' ) | rejectattr('attributes.friendly_name','eq','Balcony Fan' )| rejectattr('attributes.friendly_name','eq','Living Room Fan' ) | rejectattr('attributes.friendly_name','eq','Fan' ) | rejectattr('attributes.friendly_name','eq','Heater on_off' )| rejectattr('attributes.friendly_name','eq','MBR Heater on_off' )| rejectattr('attributes.friendly_name','eq','Common Toilet Heater' ) | list | count
+                     > 1 %}
+
+                      There are {{ expand(states.light) |
+                      selectattr('state','eq','on')|
+                      rejectattr('attributes.type','eq','browser_mod' ) | rejectattr('attributes.friendly_name','eq','Balcony Fan' )| rejectattr('attributes.friendly_name','eq','Living Room Fan' ) | rejectattr('attributes.friendly_name','eq','Fan' ) | rejectattr('attributes.friendly_name','eq','Heater on_off' )| rejectattr('attributes.friendly_name','eq','MBR Heater on_off' )| rejectattr('attributes.friendly_name','eq','Common Toilet Heater' ) | list | count
+                       }} light source turned on!
+                    {% else %}
+                      All the lights are turned off!
+                    {% endif %}
+                  view_layout:
+                    grid-area: One
+            - styles:
+                card:
+                  - width: 350px
+                  - height: 70px
+                  - background-color: rgba(0,0,0,0)
+              type: custom:button-card
+              tap_action:
+                action: fire-dom-event
+                haptic: success
+                browser_mod:
+                  command: popup
+                  title: Toggled List
+                  hide_header: false
+                  card:
+                    type: markdown
+                    content: >
+                      - {{ expand(states.light) | selectattr('state','eq','on')|
+                      rejectattr('attributes.type','eq','browser_mod' ) |
+                      map(attribute='name') | list | join("\n - ")
+                       }}
+                    card_mod:
+                      style: |
+                        ha-card {
+                          background: rgba(0, 0, 0, 0.0);
+                        }
+                deviceID:
+                  - this
+        - type: custom:state-switch
+          entity: input_boolean.kiosk_mode
+          states:
+            'on':
+              type: entities
+              entities:
+                - type: button
+                  entity: input_boolean.kiosk_mode
+                  name: Tablet Mode
+                  icon: mdi:tablet
+                  action_name: Toggle
+                  tap_action:
+                    action: toggle
+                    confirmation:
+                      text: Are you sure you want to exit Tablet Mode?
+                - type: button
+                  name: Thermostat
+                  icon: mdi:hvac
+                  action_name: Control
+                  tap_action:
+                    action: fire-dom-event
+                    haptic: success
+                    browser_mod:
+                      command: popup
+                      hide_header: true
+                      card:
+                        type: custom:swipe-card
+                        start_card: 1
+                        parameters:
+                          roundLengths: true
+                          effect: coverflow
+                          speed: 650
+                          spaceBetween: 20
+                          threshold: 7
+                          coverflowEffect:
+                            rotate: 80
+                            depth: 300
+                          pagination:
+                            type: bullets
+                        cards:
+                          - type: custom:better-thermostat-ui-card
+                            entity: climate.downstairs_hallway_thermostat
+                            card_mod:
+                              style: |
+                                ha-card {
+                                  border-radius: 16px;
+                                  height: 30vw !important;
+                                  background-color: rgba(0,0,0,0.85)
+                                }
+                          - type: custom:better-thermostat-ui-card
+                            entity: climate.upstairs_hallway_thermostat
+                            card_mod:
+                              style: |
+                                ha-card {
+                                  border-radius: 16px;
+                                  height: 30vw !important;
+                                  background-color: rgba(0,0,0,0.85)
+                                }
+                      deviceID:
+                        - this
+                      title: ⠀
+                      style:
+                        $: >
+                          .mdc-dialog .mdc-dialog__container
+                          .mdc-dialog__surface {
+                            background: rgba(0, 0, 0, 0.5);
+                            padding: 50px;
+                          }
+              card_mod:
+                style: |
+                  ha-card {
+                    background: rgba(0, 0, 0, 0.0);
+                    padding-top: 0px;
+                    color: rgba(255, 255, 255, 1);
+                  }
+            'off':
+              type: entities
+              entities:
+                - type: button
+                  entity: input_boolean.kiosk_mode
+                  name: Tablet Mode
+                  icon: mdi:tablet
+                  action_name: Toggle
+                  tap_action:
+                    action: toggle
+                    confirmation:
+                      text: Are you sure you want to enter Tablet Mode?
+                - type: button
+                  name: Thermostat
+                  icon: mdi:hvac
+                  action_name: Control
+                  tap_action:
+                    action: fire-dom-event
+                    haptic: success
+                    browser_mod:
+                      command: popup
+                      hide_header: true
+                      card:
+                        type: custom:swipe-card
+                        start_card: 1
+                        parameters:
+                          roundLengths: true
+                          effect: coverflow
+                          speed: 650
+                          spaceBetween: 20
+                          threshold: 7
+                          coverflowEffect:
+                            rotate: 80
+                            depth: 300
+                          pagination:
+                            type: bullets
+                        cards:
+                          - type: custom:better-thermostat-ui-card
+                            entity: climate.downstairs_hallway_thermostat
+                            card_mod:
+                              style: |
+                                ha-card {
+                                  border-radius: 16px;
+                                  height: 30vw !important;
+                                  background-color: rgba(0,0,0,0.85)
+                                }
+                          - type: custom:better-thermostat-ui-card
+                            entity: climate.upstairs_hallway_thermostat
+                            card_mod:
+                              style: |
+                                ha-card {
+                                  border-radius: 16px;
+                                  height: 30vw !important;
+                                  background-color: rgba(0,0,0,0.85)
+                                }
+                      deviceID:
+                        - this
+                      title: ⠀
+                      style:
+                        $: >
+                          .mdc-dialog .mdc-dialog__container
+                          .mdc-dialog__surface {
+                            background: rgba(0, 0, 0, 0.5);
+                            padding: 50px;
+                          }
+              card_mod:
+                style: |
+                  ha-card {
+                    background: rgba(0, 0, 0, 0.0);
+                    padding-top: 0px;
+                    color: rgba(255, 255, 255, 1);
+                  }
+        - type: weather-forecast
+          entity: weather.2510
+          show_forecast: false
+          card_mod:
+            style: |
+              ha-card {
+                background: rgba(0, 0, 0, 0.0);
+                padding-top: 0px;
+                color: rgba(255, 255, 255, 1);
+              }
+    cardStyle: |
+      :host {
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+      }
+      ha-card {
+        background: transparent;
+        color: #FFF;
+        overflow: hidden !important;
+        box-shadow: none !important;
+      }
